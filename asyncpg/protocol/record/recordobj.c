@@ -182,6 +182,12 @@ record_hash(ApgRecordObject *v)
 
 #else
 
+#ifndef _PyHASH_MULTIPLIER
+    /* Prime multiplier used in string and various other hashes. */
+    /* https://github.com/python/cpython/blob/f453221c8b80e0570066a9375337f208d50e6406/Include/pyhash.h */
+    #define _PyHASH_MULTIPLIER 1000003UL  /* 0xf4243 */
+#endif
+
 static Py_hash_t
 record_hash(ApgRecordObject *v)
 {
@@ -446,6 +452,31 @@ record_subscript(ApgRecordObject* o, PyObject* item)
     }
 }
 
+#ifndef _PyUnicodeWriter
+// Worst monkeypatch ever
+typedef struct {
+    PyObject *buffer;
+    void *data;
+    enum PyUnicode_Kind kind;
+    Py_UCS4 maxchar;
+    Py_ssize_t size;
+    Py_ssize_t pos;
+
+    /* minimum number of allocated characters (default: 0) */
+    Py_ssize_t min_length;
+
+    /* minimum character (default: 127, ASCII) */
+    Py_UCS4 min_char;
+
+    /* If non-zero, overallocate the buffer (default: 0). */
+    unsigned char overallocate;
+
+    /* If readonly is 1, buffer is a shared string (cannot be modified)
+       and size is set to 0. */
+    unsigned char readonly;
+} _PyUnicodeWriter ;
+
+#endif
 
 static PyObject *
 record_repr(ApgRecordObject *v)
