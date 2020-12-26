@@ -1,3 +1,8 @@
+Required at least PyPy 7.3.3
+Do not use this in production!
+Totally unoptimised and not tested
+
+
 asyncpg -- A fast PostgreSQL Database Client Library for Python/asyncio
 =======================================================================
 
